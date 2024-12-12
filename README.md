@@ -63,9 +63,11 @@ app-launcher/
 │   ├── launcher/            # Logic to launch applications
 │   │   ├── launch.go        # Launch app by name or path
 │   │   └── shortcuts.go     # Handle app shortcuts
-│   └── config/              # Configuration handling
-│       ├── config.go        # Load and save user settings
-│       └── defaults.go      # Default configurations
+│   ├── config/              # Configuration handling
+│   │   ├── config.go        # Load and save user settings
+│   │   └── defaults.go      # Default configurations
+│   └── logger/              # Logging functionality
+│       └── logger.go        # Centralized logging utility
 │
 ├── ui/                      # GUI-related files (if implementing a UI)
 │   ├── assets/              # Icons, fonts, and other assets
@@ -81,6 +83,15 @@ app-launcher/
 │   ├── appscanner_test.go   # Tests for app scanning logic
 │   ├── launcher_test.go     # Tests for app launching logic
 │   └── config_test.go       # Tests for configuration handling
+│
+├── build/                   # Build and deployment files
+│   ├── Dockerfile           # Docker container setup
+│   ├── docker-compose.yml   # Docker Compose configuration (if needed)
+│   └── Taskfile.yml         # Taskfile for automation
+│
+├── .github/                 # GitHub Actions for CI/CD
+│   └── workflows/
+│       └── go.yml           # GitHub Actions workflow for Go
 │
 ├── .gitignore               # Git ignore file
 ├── README.md                # Project documentation
