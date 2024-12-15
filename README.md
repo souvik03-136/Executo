@@ -112,7 +112,7 @@ Executo/
 1. Clone the repository:
    ```bash
    git clone https://github.com/souvik03-136/Executo.git
-   cd app-launcher
+   cd Executo
    ```
 2. Install dependencies:
    ```bash
