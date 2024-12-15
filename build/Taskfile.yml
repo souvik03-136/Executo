@@ -2,7 +2,7 @@ version: '3'
 tasks:
   build:
     cmds:
-      - go build -o bin/executo ./cmd/main.go
+      - go build -o ../bin/executo ../cmd/main.go
     desc: Build the Go application.
 
   test:
@@ -12,7 +12,7 @@ tasks:
 
   run:
     cmds:
-      - go run ./cmd/main.go
+      - go run ../cmd/main.go
     desc: Run the application.
 
   clean:

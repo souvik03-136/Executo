@@ -41,7 +41,7 @@ jobs:
             go build -o bin/executo ./cmd/main.go; \
           fi
 
-      # Step 6: Verify output (optional)
+      # Step 6: Verify output binary
       - name: Verify output binary
         shell: bash
         run: |
@@ -50,5 +50,3 @@ jobs:
           else \
             ls bin/executo; \
           fi
-
-
