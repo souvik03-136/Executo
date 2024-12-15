@@ -45,7 +45,8 @@ jobs:
       - name: Verify output binary
         run: |
           if [[ "${{ runner.os }}" == "Windows" ]]; then \
-            ls bin\executo.exe; \
+            ls bin\app-launcher.exe; \
           else \
-            ls bin/executo; \
+            ls bin/app-launcher; \
           fi
+
