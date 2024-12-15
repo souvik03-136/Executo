@@ -1,0 +1,46 @@
+version: '3'
+tasks:
+  build:
+    cmds:
+      - go build -o bin/executo ./cmd/main.go
+    desc: Build the Go application.
+
+  test:
+    cmds:
+      - go test ./... -cover
+    desc: Run unit tests with coverage.
+
+  run:
+    cmds:
+      - go run ./cmd/main.go
+    desc: Run the application.
+
+  clean:
+    cmds:
+      - rm -rf bin
+    desc: Clean build artifacts.
+
+  docker-build:
+    cmds:
+      - docker build -t executo:latest -f build/Dockerfile .
+    desc: Build the Docker image for the application.
+
+  docker-run:
+    cmds:
+      - docker run --rm -it -p 8080:8080 executo:latest
+    desc: Run the application inside a Docker container.
+
+  docker-clean:
+    cmds:
+      - docker image prune -f
+    desc: Remove unused Docker images to free up space.
+
+  docker-compose-up:
+    cmds:
+      - docker-compose -f build/docker-compose.yml up --build
+    desc: Start the application using Docker Compose with building.
+
+  docker-compose-down:
+    cmds:
+      - docker-compose -f build/docker-compose.yml down
+    desc: Stop the application and remove Docker Compose resources.

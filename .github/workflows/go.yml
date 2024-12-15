@@ -1,0 +1,51 @@
+name: Go CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      # Step 1: Checkout code
+      - uses: actions/checkout@v3
+
+      # Step 2: Set up Go environment
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.21
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: go mod tidy
+
+      # Step 4: Run tests
+      - name: Run tests
+        run: go test ./... -v
+
+      # Step 5: Build application
+      - name: Build application
+        run: |
+          if [[ "${{ runner.os }}" == "Windows" ]]; then \
+            go build -o bin\executo.exe ./cmd/main.go; \
+          else \
+            go build -o bin/executo ./cmd/main.go; \
+          fi
+
+      # Step 6: Verify output (optional)
+      - name: Verify output binary
+        run: |
+          if [[ "${{ runner.os }}" == "Windows" ]]; then \
+            ls bin\executo.exe; \
+          else \
+            ls bin/executo; \
+          fi
