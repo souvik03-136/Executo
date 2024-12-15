@@ -43,10 +43,12 @@ jobs:
 
       # Step 6: Verify output (optional)
       - name: Verify output binary
+        shell: bash
         run: |
           if [[ "${{ runner.os }}" == "Windows" ]]; then \
-            ls bin\app-launcher.exe; \
+            ls bin\executo.exe; \
           else \
-            ls bin/app-launcher; \
+            ls bin/executo; \
           fi
+
 
