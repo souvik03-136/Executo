@@ -51,7 +51,7 @@ An efficient and customizable application launcher built with Go. This project a
 ## Directory Structure
 
 ```
-app-launcher/
+Executo/
 │
 ├── cmd/                     # Entry points
 │   └── main.go              # Main application logic
@@ -111,7 +111,7 @@ app-launcher/
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/app-launcher.git
+   git clone https://github.com/souvik03-136/Executo.git
    cd app-launcher
    ```
 2. Install dependencies:
@@ -122,12 +122,6 @@ app-launcher/
    ```bash
    go run cmd/main.go
    ```
-
----
-
-## Contributing
-
-Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ---
 
