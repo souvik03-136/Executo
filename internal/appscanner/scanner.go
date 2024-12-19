@@ -1,9 +1,11 @@
 package appscanner
 
 import (
-	"errors"
+	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // Default function to get app directories.
@@ -17,21 +19,29 @@ var GetAppDirectories = func() []string {
 // Scan scans the system for available applications and returns a list.
 func Scan() ([]Application, error) {
 	var applications []Application
-
-	directories := GetAppDirectories()
-
-	for _, dir := range directories {
-		apps, err := scanDirectory(dir)
+	dirs := GetAppDirectories()
+	for _, dir := range dirs {
+		fmt.Printf("Scanning directory: %s\n", dir)
+		files, err := ioutil.ReadDir(dir)
 		if err != nil {
-			return nil, err
+			fmt.Printf("Error reading directory: %s\n", err)
+			return nil, fmt.Errorf("failed to read directory: %w", err)
 		}
-		applications = append(applications, apps...)
+		for _, file := range files {
+			fmt.Printf("File found: %s, IsDir: %t, Mode: %s\n", file.Name(), file.IsDir(), file.Mode())
+			if strings.HasSuffix(file.Name(), ".exe") {
+				fmt.Printf("Application detected: %s\n", file.Name())
+				applications = append(applications, Application{
+					Name: file.Name(),
+					Path: filepath.Join(dir, file.Name()),
+				})
+			}
+		}
 	}
-
 	if len(applications) == 0 {
-		return nil, errors.New("no applications found")
+		fmt.Println("No applications found")
+		return nil, fmt.Errorf("no applications found")
 	}
-
 	return applications, nil
 }
 

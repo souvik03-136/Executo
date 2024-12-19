@@ -1,29 +1,40 @@
 package launcher
 
 import (
-	"fmt"
+	"errors"
 	"os/exec"
 )
 
-// LaunchApp launches an application by its path or name.
-func LaunchApp(appPath string) error {
-	cmd := exec.Command(appPath)
-	cmd.Stderr = nil
-	cmd.Stdout = nil
+type Executor interface {
+	Command(name string, arg ...string) *exec.Cmd
+}
 
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("failed to start application: %w", err)
+type DefaultExecutor struct{}
+
+func (e *DefaultExecutor) Command(name string, arg ...string) *exec.Cmd {
+	return exec.Command(name, arg...)
+}
+
+var executor Executor = &DefaultExecutor{}
+
+func SetExecutor(e Executor) {
+	executor = e
+}
+
+func LaunchApp(appName string) error {
+	cmd := executor.Command(appName)
+	err := cmd.Run()
+	if err != nil {
+		return errors.New("failed to start application: " + err.Error())
 	}
-
 	return nil
 }
 
-// LaunchShortcut launches an application using a shortcut.
-func LaunchShortcut(alias string, shortcuts map[string]string) error {
-	appPath, exists := shortcuts[alias]
+func LaunchShortcut(appName string, shortcuts map[string]string) error {
+	path, exists := shortcuts[appName]
 	if !exists {
-		return fmt.Errorf("shortcut '%s' not found", alias)
+		return errors.New("shortcut '" + appName + "' not found")
 	}
 
-	return LaunchApp(appPath)
+	return LaunchApp(path)
 }
