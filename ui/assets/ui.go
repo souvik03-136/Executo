@@ -2,6 +2,7 @@ package assets
 
 import (
 	"fmt"
+	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -12,12 +13,12 @@ import (
 
 // UIConfig holds configurations for the UI
 type UIConfig struct {
-	Theme  string   // Current theme ("light", "dark", or user-defined)
-	Layout string   // Layout style (e.g., "grid", "list")
-	Apps   []string // List of apps to display in the UI
+	Theme  string   // Theme ("light", "dark", or custom)
+	Layout string   // Layout style ("grid", "list")
+	Apps   []string // List of apps
 }
 
-// DefaultConfig provides default UI configurations
+// DefaultConfig returns default configurations
 func DefaultConfig() UIConfig {
 	return UIConfig{
 		Theme:  "light",
@@ -26,7 +27,7 @@ func DefaultConfig() UIConfig {
 	}
 }
 
-// InitializeUI starts the user interface with the provided configuration
+// InitializeUI starts the GUI with the specified configuration
 func InitializeUI(config UIConfig) {
 	application := app.New()
 	window := application.NewWindow("Executo Launcher")
@@ -38,7 +39,6 @@ func InitializeUI(config UIConfig) {
 		application.Settings().SetTheme(theme.LightTheme())
 	}
 
-	// Build UI components
 	var content fyne.CanvasObject
 	if config.Layout == "grid" {
 		content = buildGridLayout(config)
@@ -51,11 +51,11 @@ func InitializeUI(config UIConfig) {
 	window.ShowAndRun()
 }
 
-// buildGridLayout creates a grid layout for the apps
+// buildGridLayout creates a grid layout
 func buildGridLayout(config UIConfig) fyne.CanvasObject {
 	buttons := make([]fyne.CanvasObject, len(config.Apps))
 	for i, appName := range config.Apps {
-		buttons[i] = widget.NewButton(appName, func(appName string) func() {
+		buttons[i] = widget.NewButtonWithIcon(appName, theme.DocumentIcon(), func(appName string) func() {
 			return func() {
 				fmt.Printf("Launching %s\n", appName)
 			}
@@ -64,8 +64,10 @@ func buildGridLayout(config UIConfig) fyne.CanvasObject {
 	return container.NewGridWithColumns(3, buttons...)
 }
 
-// buildListLayout creates a list layout for the apps
 func buildListLayout(config UIConfig) fyne.CanvasObject {
+	search := widget.NewEntry()
+	search.SetPlaceHolder("Search apps...")
+
 	list := widget.NewList(
 		func() int {
 			return len(config.Apps)
@@ -82,13 +84,24 @@ func buildListLayout(config UIConfig) fyne.CanvasObject {
 		fmt.Printf("Launching %s\n", config.Apps[id])
 	}
 
-	return container.NewVBox(list)
+	search.OnChanged = func(input string) {
+		filtered := filterApps(config.Apps, input)
+		list.Length = func() int { return len(filtered) }
+		list.UpdateItem = func(id widget.ListItemID, obj fyne.CanvasObject) {
+			obj.(*widget.Label).SetText(filtered[id])
+		}
+		list.Refresh()
+	}
+
+	return container.NewVBox(search, list)
 }
 
-// Example usage
-func Example() {
-	config := DefaultConfig()
-	config.Theme = "dark"  // Set theme to dark
-	config.Layout = "grid" // Choose grid layout
-	InitializeUI(config)
+func filterApps(apps []string, input string) []string {
+	var result []string
+	for _, app := range apps {
+		if strings.Contains(strings.ToLower(app), strings.ToLower(input)) {
+			result = append(result, app)
+		}
+	}
+	return result
 }
